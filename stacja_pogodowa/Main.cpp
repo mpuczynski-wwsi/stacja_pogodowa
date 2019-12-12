@@ -1,4 +1,5 @@
 #include <iostream>
+#include <random>
 
 using namespace std;
 
@@ -26,7 +27,7 @@ void dodajTemperature(double *temperaturaPowietrza){
 
 
 void wygeneruj_wartosci(int * a, int n, int d, int g){
-	std::default_random_engine gen(unsigned(time(0)));
+	default_random_engine gen(unsigned(time(0)));
 	uniform_int_distribution<int> los(d, g);
 	for (int i = 0; i < n; i++)
 		a[i] = los(gen);
@@ -59,6 +60,12 @@ void drukuj_tablice(int * a, int n){
 		cout << a[i]<<" ";
 }
 
+void drukuj_tablice(double * a, int n){
+	cout << "\n\n";
+	for (int i = 0; i < n; i++)
+		cout << a[i]<<" ";
+}
+
 
 
 int main(int argc, char const *argv[])
@@ -69,14 +76,14 @@ int n;
 
 	double* temperaturaPowietrza = utworz_double(n);
   int* predkoscWiatru = utworz_int(n);
-	double* temperaturaPowietrza = utworz_double(n);
+	double* cisnienieAtmosferyczne = utworz_double(n);
 
 
 	char wybor = 'l';
 	cout << "tablice losowe (l) czy z klawiatury (k)?: ";
 	cin >> wybor;
 	if (wybor == 'l') {
-		wygeneruj_wartosci(temperaturaPowietrza, n);
+		wygeneruj_wartosci(temperaturaPowietrza, n, -20.0, 45.0);
 	}
 	else {
 		wpisz_wartosci(temperaturaPowietrza, n);
