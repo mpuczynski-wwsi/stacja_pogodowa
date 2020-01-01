@@ -1,5 +1,6 @@
 #include <iostream>
 #include <random>
+#include <time.h>
 
 using namespace std;
 
@@ -66,6 +67,48 @@ void drukuj_tablice(double * a, int n){
 		cout << a[i]<<" ";
 }
 
+// 1.  Wyznaczyć dzień(albo godzinę), w którym wartość temperatury jest największa
+
+double wyznacz_max(double* a, int n) {
+	double max = a[0];
+	for (int i = 1; i < n; i++) {
+		if (a[i] < max) {
+			max = a[i];
+		}
+	}
+	return max;
+}
+
+// 2.  Sprawdzić, czy w podanym przedziale czasu wartości cisniene atmosferyczne tworzą ciąg rosnący;
+bool jest_rosnacy_w_przedziale(double* a, int n, int poczatek, int koniec) {
+	for (int i = poczatek-1; i < koniec; i++) {
+		if (a[i - 1] >= a[i]) { //czy nastepnik jest wiekszy od poprzednika
+			return false;
+		}
+	}
+	return true;
+}
+
+// 5.  Posortować wskazane okresy czasu (np. dni, miesiące)  w kolejności niemalejących wartości predkosci wiatru ;
+int* sortuj_niemalejaco(int* a, int n) {
+	int i, j, minIndeks, tmp;
+	for (i = 0; i < n - 1; i++) {
+		minIndeks = i;
+
+		for (j = i + 1; j < n; j++) {
+			if (a[j] < a[minIndeks]) {
+				minIndeks = j;
+			}
+		}
+
+		if (minIndeks != i) {
+			tmp = a[i];
+			a[i] = a[minIndeks];
+			a[minIndeks] = tmp;
+		}
+	}
+	return a;
+}
 
 
 int main(int argc, char const *argv[])
@@ -75,7 +118,7 @@ int n;
 	cin >> n;
 
 	double* temperaturaPowietrza = utworz_double(n);
-  int* predkoscWiatru = utworz_int(n);
+	int* predkoscWiatru = utworz_int(n);
 	double* cisnienieAtmosferyczne = utworz_double(n);
 
 
@@ -84,11 +127,23 @@ int n;
 	cin >> wybor;
 	if (wybor == 'l') {
 		wygeneruj_wartosci(temperaturaPowietrza, n, -20.0, 45.0);
+		wygeneruj_wartosci(predkoscWiatru, n, 0, 10);
+		wygeneruj_wartosci(cisnienieAtmosferyczne, n, 980.0, 1100.0);
 	}
 	else {
+		cout << "wpisz wartosci temperatury powietrza:\n";
 		wpisz_wartosci(temperaturaPowietrza, n);
+		cout << "wpisz wartosci predkosc wiatru:\n";
+		wpisz_wartosci(predkoscWiatru, n);
+		cout << "wpisz wartosci cisnienia atmosferycznego:\n";
+		wpisz_wartosci(cisnienieAtmosferyczne, n);
 	}
 
 	drukuj_tablice(temperaturaPowietrza, n);
+	drukuj_tablice(predkoscWiatru, n);
+	drukuj_tablice(cisnienieAtmosferyczne, n);
+
+
+
   return 0;
 }
