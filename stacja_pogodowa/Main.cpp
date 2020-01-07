@@ -1,6 +1,7 @@
 #include <iostream>
 #include <random>
 #include <time.h>
+#include <tuple>
 
 using namespace std;
 
@@ -67,19 +68,22 @@ void drukuj_tablice(double * a, int n){
 		cout << a[i]<<" ";
 }
 
-// 1.  Wyznaczyć dzień(albo godzinę), w którym wartość temperatury jest największa
+// 1. Wyznaczyć dzień, w którym wartość temperatury jest największa
 
-double wyznacz_max(double* a, int n) {
+	std::tuple<double, int> wyznacz_max(double* a, int n) {
 	double max = a[0];
+	int dzien = 0;
 	for (int i = 1; i < n; i++) {
-		if (a[i] < max) {
+		if (a[i] > max) {
 			max = a[i];
+			dzien = i;
 		}
 	}
-	return max;
+
+	return std::make_tuple(max, dzien); 
 }
 
-// 2.  Sprawdzić, czy w podanym przedziale czasu wartości cisniene atmosferyczne tworzą ciąg rosnący;
+// 2. Sprawdzić, czy w podanym przedziale czasu wartości cisniene atmosferyczne tworzą ciąg rosnący;
 bool jest_rosnacy_w_przedziale(double* a, int n, int poczatek, int koniec) {
 	for (int i = poczatek-1; i < koniec; i++) {
 		if (a[i - 1] >= a[i]) { //czy nastepnik jest wiekszy od poprzednika
@@ -89,7 +93,7 @@ bool jest_rosnacy_w_przedziale(double* a, int n, int poczatek, int koniec) {
 	return true;
 }
 
-// 5.  Posortować wskazane okresy czasu (np. dni, miesiące)  w kolejności niemalejących wartości predkosci wiatru ;
+// 3. Posortować wskazane okresy czasu dni w kolejności niemalejących wartości predkosci wiatru ;
 int* sortuj_niemalejaco(int* a, int n) {
 	int i, j, minIndeks, tmp;
 	for (i = 0; i < n - 1; i++) {
@@ -129,6 +133,14 @@ int n;
 		wygeneruj_wartosci(temperaturaPowietrza, n, -20.0, 45.0);
 		wygeneruj_wartosci(predkoscWiatru, n, 0, 10);
 		wygeneruj_wartosci(cisnienieAtmosferyczne, n, 980.0, 1100.0);
+		
+		cout << "\nWygenerowana tablica temperatur powietrza:\n";
+		drukuj_tablice(temperaturaPowietrza, n);
+		cout << "\nWygenerowana tablica predkosci wiatru:\n";
+		drukuj_tablice(predkoscWiatru, n);
+		cout << "\nWygenerowana tablica cisnienia atmosferycznego:\n";
+		drukuj_tablice(cisnienieAtmosferyczne, n);
+
 	}
 	else {
 		cout << "wpisz wartosci temperatury powietrza:\n";
@@ -137,13 +149,70 @@ int n;
 		wpisz_wartosci(predkoscWiatru, n);
 		cout << "wpisz wartosci cisnienia atmosferycznego:\n";
 		wpisz_wartosci(cisnienieAtmosferyczne, n);
+
+		cout << "\nTablica temperatur powietrza:\n";
+		drukuj_tablice(temperaturaPowietrza, n);
+		cout << "\nTablica predkosci wiatru:\n";
+		drukuj_tablice(predkoscWiatru, n);
+		cout << "\nTablica cisnienia atmosferycznego:\n";
+		drukuj_tablice(cisnienieAtmosferyczne, n);
 	}
 
-	drukuj_tablice(temperaturaPowietrza, n);
-	drukuj_tablice(predkoscWiatru, n);
-	drukuj_tablice(cisnienieAtmosferyczne, n);
+
+
+	int operacja;
+	while (true)
+	{
+		cout << "\n\nOPERACJE:\n";
+		cout << "(1). Wyznaczyć dzień w którym wartość temperatury jest największa:\n";
+		cout << "(2). Sprawdzić, czy w podanym przedziale czasu wartości cisniene atmosferyczne tworzą ciąg rosnacy:\n";
+		cout << "(3). Posortować wskazane okresy czasu dni w kolejności niemalejących wartości predkosci wiatru:\n";
+		cout << "\n\Wybierz 1-3, 0 aby zakonczyc:\n";
+		cin >> operacja;
+
+		switch (operacja) {
+		case 1:
+			double temperatura;
+			int dzien;
+			std::tie(temperatura, dzien) = wyznacz_max(temperaturaPowietrza, n);
+			cout << "Maksymalna temperatura o wartosci " << temperatura << " byla dnia " << dzien + 1 << "\n";
+			break;
+
+		case 2:
+			int poczatek, koniec;
+			bool wynik2;
+			cout << "podaj przedzial w dniach 1 - " << n << "\n";
+			cin >> poczatek >> koniec;
+
+			wynik2 = jest_rosnacy_w_przedziale(cisnienieAtmosferyczne, n, poczatek - 1, koniec);
+			if (wynik2) {
+				cout << "W podanym przedziale czasu wartości cisniene atmosferyczne tworzą ciąg rosnacy";
+			}
+			else {
+				cout << "W podanym przedziale czasu wartości cisniene atmosferyczne nie tworzą ciągu rosnacego";
+			}
+			break;
+			
+		case 3:
+			int* wynik3;
+			wynik3 = sortuj_niemalejaco(predkoscWiatru, n);
+			cout << "Posortowana predkosc wiatru w kolejnosci niemalejacej:\n";
+			drukuj_tablice(wynik3, n);
+			break;
+
+		default:
+			return 0;
+			break;
+		}
+
+	}
 
 
 
-  return 0;
+	
+
+
+
+
+  
 }
